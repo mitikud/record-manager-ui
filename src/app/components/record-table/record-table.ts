@@ -146,6 +146,8 @@ export class RecordTable implements OnInit {
 
       error: (error) => {
         console.error('Failed to save note:', error);
+        console.error('Failed to save note:', error);
+        console.log('Failed to save note:', error);
 
         this.errorMessage =
           'Unable to save note. Please try again.';
