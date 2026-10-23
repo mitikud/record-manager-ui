@@ -1,0 +1,95 @@
+<div class="record-layout">
+
+  <!-- LEFT PANEL -->
+  <div class="left-panel">
+
+    <h2>Records</h2>
+<p *ngIf="errorMessage" class="error">
+      {{ errorMessage }}
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let record of records">
+
+          <td>
+            <button
+              type="button"
+              (click)="selectRecord(record)">
+              {{ record.id }}
+            </button>
+          </td>
+
+          <td>{{ record.name }}</td>
+          <td>{{ record.status }}</td>
+
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="actions">
+
+      <button
+        type="button"
+        (click)="showSectionA()"
+        [disabled]="!selectedRecord">
+        Button A
+      </button>
+
+      <button
+        type="button"
+        (click)="showSectionB()"
+        [disabled]="!selectedRecord">
+        Button B
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
+
+    <ng-container *ngIf="selectedRecord as record; else noSelection">
+
+      <app-section-a
+        *ngIf="activeSection === 'A'"
+        [record]="record">
+      </app-section-a>
+
+      <!-- <app-section-b
+        *ngIf="activeSection === 'B'"
+        [record]="record"
+        (noteAdded)="onNoteAdded($event)">
+      </app-section-b> -->
+
+      
+      <app-section-b
+        *ngIf="activeSection === 'B'"
+        [record]="record"
+        [saving]="isSavingNote"
+        [saveError]="errorMessage"
+        [savedNote]="lastSavedNote"
+        (noteAdded)="onNoteAdded($event)">
+      </app-section-b>
+
+      <p *ngIf="activeSection === null">
+        Select Button A or Button B.
+      </p>
+
+    </ng-container>
+
+    <ng-template #noSelection>
+      <p>Select a record ID from the table.</p>
+    </ng-template>
+
+  </div>
+
+</div>

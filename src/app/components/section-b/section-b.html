@@ -1,0 +1,49 @@
+<h3>Section B - Additional Details</h3>
+
+<p><strong>ID:</strong> {{ record.id }}</p>
+
+<label>Category:</label>
+
+<select [value]="record.category">
+  <option value="General">General</option>
+  <option value="Technical">Technical</option>
+  <option value="Billing">Billing</option>
+</select>
+
+<p><strong>Created Date:</strong> {{ record.createdAt }}</p>
+
+<h4>Notes</h4>
+
+<textarea
+  [(ngModel)]="noteText"
+  (keydown)="onNoteKeydown($event)"
+  [disabled]="saving"
+  rows="3"
+  placeholder="Write a note and press Enter...">
+</textarea>
+<p *ngIf="saving">Saving note...</p>
+
+<p *ngIf="saveError" class="error">
+  {{ saveError }}
+</p>
+<small>
+  Enter to add note · Shift + Enter for a new line
+</small>
+<hr />
+
+<h4>Notes History</h4>
+<!-- Display notes below the text box -->
+<div class="notes-list">
+
+  <div *ngFor="let note of record.notes" class="note-item">
+
+    <p>{{ note.content }}</p>
+
+    <small>
+      {{ note.createdAt | date:'medium' }}
+    </small>
+
+     <hr />
+  </div>
+
+</div>

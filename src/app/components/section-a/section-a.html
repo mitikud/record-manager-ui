@@ -1,0 +1,18 @@
+<h3>Section A - Record Information</h3>
+
+<p><strong>ID:</strong> {{ record.id }}</p>
+
+<p><strong>Name:</strong> {{ record.name }}</p>
+
+<label>Status:</label>
+
+<select [value]="record.status">
+  <option value="OPEN">Open</option>
+  <option value="PENDING">Pending</option>
+  <option value="CLOSED">Closed</option>
+</select>
+
+<p>
+  <strong>Created Date:</strong>
+  {{ record.createdAt }}
+</p>
