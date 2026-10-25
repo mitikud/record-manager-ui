@@ -14,8 +14,17 @@ export class SectionB {
   @Input({ required: true })
   record!: RecordItem;
 
-   @Output()
+  @Input()
+  savingRecord = false;
+
+  @Output()
   noteAdded = new EventEmitter<RecordNote>();
+
+  @Output()
+  categoryChanged = new EventEmitter<string>();
+
+  @Output()
+  priorityChanged = new EventEmitter<string>();
 
 
   // Add OnChanges to the class declaration:
@@ -33,35 +42,45 @@ export class SectionB {
   }
 }
 
-ngOnChanges(changes: SimpleChanges): void {
-  if (changes['record']) {
-    this.noteText = '';
-  }
-}
-
-onNoteKeydown(event: KeyboardEvent): void {
-
-  if (event.key !== 'Enter' || event.shiftKey) {
-    return;
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['record']) {
+      this.noteText = '';
+    }
   }
 
-  event.preventDefault();
-
-  const content = this.noteText.trim();
-
-  if (!content || this.saving) {
-    return;
+  onCategoryChange(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    this.categoryChanged.emit(select.value);
   }
 
-  const note: RecordNote = {
-    id: 0,
-    recordId: this.record.id,
-    content,
-    createdAt: new Date().toISOString()
-  };
+  onPriorityChange(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    this.priorityChanged.emit(select.value);
+  }
 
-  this.noteAdded.emit(note);
-}
+  onNoteKeydown(event: KeyboardEvent): void {
+
+    if (event.key !== 'Enter' || event.shiftKey) {
+      return;
+    }
+
+    event.preventDefault();
+
+    const content = this.noteText.trim();
+
+    if (!content || this.saving) {
+      return;
+    }
+
+    const note: RecordNote = {
+      id: 0,
+      recordId: this.record.id,
+      content,
+      createdAt: new Date().toISOString()
+    };
+
+    this.noteAdded.emit(note);
+  }
 
     // // Create a note object
     // const newNote: RecordNote = {

@@ -37,6 +37,17 @@ export class RecordService {
       { content }
     );
   }
+
+  updateRecord(
+    recordId: number,
+    changes: Partial<Pick<RecordItem, 'status' | 'category' | 'priority'>>
+  ): Observable<RecordItem> {
+
+    return this.http.patch<RecordItem>(
+      `${this.apiUrl}/${recordId}`,
+      changes
+    );
+  }
 }
 
 

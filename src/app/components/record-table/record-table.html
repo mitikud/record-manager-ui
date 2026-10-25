@@ -4,8 +4,11 @@
   <div class="left-panel">
 
     <h2>Records</h2>
-<p *ngIf="errorMessage" class="error">
-      {{ errorMessage }}
+    <p *ngIf="errorMessage" class="error">
+        {{ errorMessage }}
+    </p>
+    <p *ngIf="recordError" class="error">
+      {{ recordError }}
     </p>
     <table>
       <thead>
@@ -13,6 +16,8 @@
           <th>ID</th>
           <th>Name</th>
           <th>Status</th>
+          <th>Category</th>
+          <th>Priority</th>
         </tr>
       </thead>
 
@@ -29,6 +34,8 @@
 
           <td>{{ record.name }}</td>
           <td>{{ record.status }}</td>
+          <td>{{ record.category }}</td>
+          <td>{{ record.priority }}</td>
 
         </tr>
       </tbody>
@@ -39,7 +46,8 @@
       <button
         type="button"
         (click)="showSectionA()"
-        [disabled]="!selectedRecord">
+        [disabled]="!selectedRecord"
+      >
         Button A
       </button>
 
@@ -61,7 +69,9 @@
 
       <app-section-a
         *ngIf="activeSection === 'A'"
-        [record]="record">
+        [record]="record"
+        [saving]="isSavingRecord"
+        (statusChanged)="onStatusChanged($event)">
       </app-section-a>
 
       <!-- <app-section-b
@@ -75,8 +85,11 @@
         *ngIf="activeSection === 'B'"
         [record]="record"
         [saving]="isSavingNote"
+        [savingRecord]="isSavingRecord"
         [saveError]="errorMessage"
         [savedNote]="lastSavedNote"
+        (categoryChanged)="onCategoryChanged($event)"
+        (priorityChanged)="onPriorityChanged($event)"
         (noteAdded)="onNoteAdded($event)">
       </app-section-b>
 

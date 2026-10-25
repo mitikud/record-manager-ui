@@ -4,10 +4,29 @@
 
 <label>Category:</label>
 
-<select [value]="record.category">
+<select 
+  id="category"
+  [value]="record.category"
+  [disabled]="savingRecord"
+  (change)="onCategoryChange($event)">
+
   <option value="General">General</option>
   <option value="Technical">Technical</option>
   <option value="Billing">Billing</option>
+</select>
+
+<label for="priority">Priority:</label>
+
+<select
+  id="priority"
+  [value]="record.priority"
+  [disabled]="savingRecord"
+  (change)="onPriorityChange($event)">
+
+  <option value="HIGH">High</option>
+  <option value="MEDIUM">Medium</option>
+  <option value="LOW">Low</option>
+
 </select>
 
 <p><strong>Created Date:</strong> {{ record.createdAt }}</p>

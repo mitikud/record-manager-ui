@@ -12,32 +12,11 @@ import { RecordService } from '../../services/record';
   templateUrl: './record-table.html',
   styleUrl: './record-table.scss',
 })
-export class RecordTable implements OnInit {
+export class RecordTable implements OnInit {  
 
-  // Normal TypeScript array
-  // records: RecordItem[] = [
-  //   {
-  //     id: 101,
-  //     name: 'John Smith',
-  //     status: 'OPEN',
-  //     category: 'General',
-  //     priority: 'HIGH',
-  //     description: 'Customer request',
-  //     createdAt: '2026-10-21',
-  //     notes: []
-  //   },
-  //   {
-  //     id: 102,
-  //     name: 'Sarah Wilson',
-  //     status: 'PENDING',
-  //     category: 'Technical',
-  //     priority: 'MEDIUM',
-  //     description: 'Technical issue',
-  //     createdAt: '2026-10-20',
-  //     notes: []
-  //   }
-  // ];
-  
+
+  isSavingRecord = false;
+  recordError = '';
 
   // Selected object
   
@@ -81,12 +60,17 @@ export class RecordTable implements OnInit {
     this.recordService.getRecords().subscribe({
 
       next: (data) => {
-        console.log('API response:', data);
+        // console.log('API response:', data);
         this.records = data;
-         console.log('Table records:', this.records);
+        if (this.selectedRecord) {
+          this.selectedRecord =
+          this.records.find(r => r.id === this.selectedRecord?.id) ?? null;
+    }
+        //  console.log('Table records:', this.records);
         this.errorMessage = '';
+        
         // Notify Angular that data has changed
-      this.cdr.markForCheck();
+        this.cdr.markForCheck();
       },
 
       error: (error) => {
@@ -158,6 +142,73 @@ export class RecordTable implements OnInit {
     });
   }
 
+  onStatusChanged(status: string): void {
+  this.updateSelectedRecord({ status });
+}
+
+  onCategoryChanged(category: string): void {
+    this.updateSelectedRecord({ category });
+  }
+
+  onPriorityChanged(priority: string): void {
+    this.updateSelectedRecord({ priority });
+  }
+
+  updateSelectedRecord(
+    changes: Partial<Pick<RecordItem, 'status' | 'category' | 'priority'>>
+  ): void {
+
+    if (!this.selectedRecord || this.isSavingRecord) {
+      return;
+    }
+
+    const recordId = this.selectedRecord.id;
+
+    this.isSavingRecord = true;
+    this.recordError = '';
+
+    this.recordService.updateRecord(
+      recordId,
+      changes
+    ).subscribe({
+
+        next: (updatedRecord: RecordItem) => {
+
+          // Replace updated record in table data
+          this.records = this.records.map(record =>
+            record.id === updatedRecord.id
+              ? updatedRecord
+              : record
+          );
+
+          // Refresh selected object
+          if (this.selectedRecord?.id === updatedRecord.id) {
+            this.selectedRecord = updatedRecord;
+          }
+
+          this.isSavingRecord = false;
+
+          // Notify Angular change detection
+          this.cdr.markForCheck();
+        },
+
+        error: (error) => {
+
+          console.error('Update failed:', error);
+
+          this.recordError =
+            'Unable to update record. Please try again.';
+
+          this.isSavingRecord = false;
+
+          // Reload the saved values to reset the dropdowns
+          this.loadRecords();
+
+          this.cdr.markForCheck();
+        }
+
+    });
+}
 
   showSectionA(): void {
     if (this.selectedRecord) {
