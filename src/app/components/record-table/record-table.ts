@@ -14,8 +14,10 @@ import { RecordService } from '../../services/record';
 })
 export class RecordTable implements OnInit {  
 
+  recordMessage = '';
 
   isSavingRecord = false;
+
   recordError = '';
 
   // Selected object
@@ -166,6 +168,7 @@ export class RecordTable implements OnInit {
 
     this.isSavingRecord = true;
     this.recordError = '';
+    this.recordMessage = '';
 
     this.recordService.updateRecord(
       recordId,
@@ -202,7 +205,11 @@ export class RecordTable implements OnInit {
           this.isSavingRecord = false;
 
           // Reload the saved values to reset the dropdowns
-          this.loadRecords();
+          // this.loadRecords();
+
+           // Restore the dropdown by recreating the selected record
+          // from its last successfully saved values.
+          this.selectedRecord = { ...this.selectedRecord! };
 
           this.cdr.markForCheck();
         }

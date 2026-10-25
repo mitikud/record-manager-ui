@@ -4,6 +4,11 @@
   <div class="left-panel">
 
     <h2>Records</h2>
+
+    <p *ngIf="isSavingRecord">
+         Saving changes...
+    </p>
+
     <p *ngIf="errorMessage" class="error">
         {{ errorMessage }}
     </p>
