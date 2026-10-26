@@ -16,7 +16,70 @@
   <option value="CLOSED">Closed</option>
 </select>
 
+
+
 <p>
   <strong>Created Date:</strong>
   {{ record.createdAt }}
 </p>
+
+<hr />
+
+<h3>Edit Record</h3>
+
+<div *ngIf="editedRecord">
+
+  <p>
+    <strong>Record ID:</strong>
+    {{ editedRecord.id }}
+  </p>
+
+  <label>Name</label>
+  <input
+    type="text"
+    [(ngModel)]="editedRecord.name"
+  />
+
+  <label>Status</label>
+  <select [(ngModel)]="editedRecord.status">
+    <option value="OPEN">Open</option>
+    <option value="PENDING">Pending</option>
+    <option value="CLOSED">Closed</option>
+  </select>
+
+  <label>Category</label>
+  <select [(ngModel)]="editedRecord.category">
+    <option value="General">General</option>
+    <option value="Technical">Technical</option>
+    <option value="Billing">Billing</option>
+  </select>
+
+  <label>Priority</label>
+  <select [(ngModel)]="editedRecord.priority">
+    <option value="HIGH">High</option>
+    <option value="MEDIUM">Medium</option>
+    <option value="LOW">Low</option>
+  </select>
+
+  <label>Description</label>
+  <textarea
+    [(ngModel)]="editedRecord.description">
+  </textarea>
+
+  <div>
+    <button
+      type="button"
+      [disabled]="saving"
+      (click)="saveChanges()">
+      {{ saving ? 'Saving...' : 'Save Changes' }}
+    </button>
+
+    <button
+      type="button"
+      [disabled]="saving"
+      (click)="cancelChanges()">
+      Cancel
+    </button>
+  </div>
+
+</div>

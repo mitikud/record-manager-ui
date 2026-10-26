@@ -24,6 +24,7 @@ export class RecordTable implements OnInit {
   
   records: RecordItem[] = [];
 
+  // selectedRecord: RecordItem | null = null;
   selectedRecord: RecordItem | null = null;
 
   // Active button
@@ -35,6 +36,56 @@ export class RecordTable implements OnInit {
 
   lastSavedNote: RecordNote | null = null;
 
+
+  onRecordSaved(updated: RecordItem): void {
+
+    if (!this.selectedRecord || this.isSavingRecord) {
+      return;
+    }
+
+    // Prevent updating a different record accidentally
+    if (updated.id !== this.selectedRecord.id) {
+      return;
+    }
+
+    this.isSavingRecord = true;
+    this.recordError = '';
+    this.recordMessage = '';
+
+    this.recordService
+      .saveRecord(updated)
+      .subscribe({
+
+        next: (savedRecord: RecordItem) => {
+
+          // Replace the saved object in the table
+          this.records = this.records.map(record =>
+            record.id === savedRecord.id
+              ? savedRecord
+              : record
+          );
+
+          // Replace selected object with server response
+          this.selectedRecord = savedRecord;
+
+          this.isSavingRecord = false;
+          this.recordMessage = 'Record saved successfully.';
+
+          this.cdr.markForCheck();
+        },
+
+        error: (error) => {
+
+          console.error('Save failed:', error);
+
+          this.isSavingRecord = false;
+          this.recordError = 'Unable to save record.';
+
+          // Parent data remains unchanged on failure
+          this.cdr.markForCheck();
+        }
+      });
+}
 
   selectRecord(record: RecordItem): void {
     this.selectedRecord = record;
@@ -61,12 +112,14 @@ export class RecordTable implements OnInit {
 
     this.recordService.getRecords().subscribe({
 
-      next: (data) => {
+      next: (data:RecordItem[]) => {
         // console.log('API response:', data);
         this.records = data;
         if (this.selectedRecord) {
           this.selectedRecord =
           this.records.find(r => r.id === this.selectedRecord?.id) ?? null;
+           
+          
     }
         //  console.log('Table records:', this.records);
         this.errorMessage = '';

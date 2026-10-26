@@ -38,6 +38,14 @@ export class RecordService {
     );
   }
 
+  saveRecord(record: RecordItem): Observable<RecordItem> {
+
+  return this.http.put<RecordItem>(
+    `${this.apiUrl}/${record.id}`,
+    record
+  );
+}
+
   updateRecord(
     recordId: number,
     changes: Partial<Pick<RecordItem, 'status' | 'category' | 'priority'>>

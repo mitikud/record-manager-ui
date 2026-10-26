@@ -76,6 +76,7 @@
         *ngIf="activeSection === 'A'"
         [record]="record"
         [saving]="isSavingRecord"
+         (recordSaved)="onRecordSaved($event)"
         (statusChanged)="onStatusChanged($event)">
       </app-section-a>
 
